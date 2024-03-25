@@ -4,24 +4,42 @@ app = Flask(__name__)
 
 # jsonify({"code":"0", "msg":"操作成功", "data":data})
 
-@app.route('/')
+@app.route('/test')
 def hello_world():
     return 'Hello, World!'
 
-@app.route("/test", methods=["GET"])
-def get_all_users():
-    """获取所有用户信息"""
-    return jsonify({"ret":"0", "data":data, "msg":"测试test成功"})
+@app.route("/add_task", methods=["GET", "POST"])
+def add_user_task():
+    inp = request.get_json()
+    try:
+        token = inp["token"]
+        user = inp["user"]
+        text = inp["text"]
+        task = inp["task"]
+    except Exception as e:
+        return jsonify({"ret":"-1", "data":"", "msg": e})
 
-@app.route('/process', methods=["GET", "POST"])
-def process_data():
-  # 请求方式为post时，可以使用 request.get_json()接收到JSON数据
-    data = request.get_json()  # 获取 POST 请求中的 JSON 数据
-    resp = {"ret":"0", "data":data, "msg":"测试process成功"}
+    if token != "fighting":
+        return jsonify({"ret":"-1", "data":"", "msg":"error auth!"})
+    
+    return jsonify({"ret":"0", "data": inp, "msg":"test success!"})
 
-    # 请求方得到处理后的数据
-    return jsonify(resp)
+@app.route('/gen_mind', methods=["GET", "POST"])
+def gen_text_mind():
+    inp = request.get_json()
+    try:
+        token = inp["token"]
+        user = inp["user"]
+        text = inp["text"]
+        task = inp["task"]
+    except Exception as e:
+        return jsonify({"ret":"-1", "data":"", "msg": e})
+
+    if token != "fighting":
+        return jsonify({"ret":"-1", "data":"", "msg":"error auth!"})
+    
+    return jsonify({"ret":"0", "data": inp, "msg":"test success!"})
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0", port="8501")
