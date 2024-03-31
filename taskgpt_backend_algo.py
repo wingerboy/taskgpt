@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request
 
+import text_transfer_mind
+
 app = Flask(__name__)
 
 # jsonify({"code":"0", "msg":"操作成功", "data":data})
@@ -38,7 +40,8 @@ def gen_text_mind():
     if token != "fighting":
         return jsonify({"ret":"-1", "data":"", "msg":"error auth!"})
     
-    return jsonify({"ret":"0", "data": inp, "msg":"test success!"})
+    mind_txt, cost = text_to_mind(inp["text"])
+    return jsonify({"ret":"0", "data": mind_txt, f"msg":"gen success! cost: {cost}"})
 
 
 if __name__ == '__main__':
