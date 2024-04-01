@@ -1,4 +1,4 @@
-import backend_algo
+from backend_algo import *
 
 
 if __name__ == '__main__':

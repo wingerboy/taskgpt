@@ -105,7 +105,7 @@ MINDMAP IN MARKDOWN:
 def text_to_mind(text):
 
     # Set your OpenAI API Key.
-    openai_api_key = OPENAI_API_KEYS
+    # openai_api_key = OPENAI_API_KEYS
 
     # Split Data For Mindmap Generation
     text_splitter = TokenTextSplitter(model_name=OPENAI_API_MODEL, chunk_size=10000, chunk_overlap=1000)
@@ -120,7 +120,7 @@ def text_to_mind(text):
 
     with get_openai_callback() as cb:
 
-        llm_markdown = ChatOpenAI(openai_api_key=openai_api_key, temperature=0.3, model=OPENAI_API_MODEL)
+        llm_markdown = ChatOpenAI(openai_api_key=OPENAI_API_KEYS, temperature=0.3, model=OPENAI_API_MODEL)
 
         summarize_chain = load_summarize_chain(llm=llm_markdown, 
         chain_type="refine", verbose=False, question_prompt=PROMPT_MINDMAP, refine_prompt=REFINE_PROMPT_MINDMAP) # 
