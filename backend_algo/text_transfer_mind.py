@@ -102,7 +102,7 @@ MINDMAP IN MARKDOWN:
 )
 
 
-def text_to_mind(text)
+def text_to_mind(text):
 
     # Set your OpenAI API Key.
     openai_api_key = OPENAI_API_KEYS
