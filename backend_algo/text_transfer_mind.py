@@ -1,4 +1,4 @@
-import config
+from backend_algo.config import *
 
 from langchain.chat_models import ChatOpenAI
 from langchain.text_splitter import TokenTextSplitter

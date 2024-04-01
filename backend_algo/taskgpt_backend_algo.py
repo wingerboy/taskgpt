@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 
-from text_transfer_mind import text_to_mind
+from backend_algo.text_transfer_mind import text_to_mind
 
 app = Flask(__name__)
 

@@ -1,4 +1,4 @@
-from text_transfer_mind import text_to_mind
+import backend_algo
 
 
 if __name__ == '__main__':
@@ -266,5 +266,5 @@ if __name__ == '__main__':
 
   '''
     mind_txt, cost = text_to_mind(text)
-    return jsonify({"ret":"0", "data": mind_txt, f"msg":"gen success! cost: {cost}"})
+    print({"ret":"0", "data": mind_txt, "msg": f"gen success! cost: {cost}"})
 
