@@ -1,4 +1,7 @@
 from flask import Flask, jsonify, request
+import markdown
+import json
+from bs4 import BeautifulSoup
 
 from .text_transfer_mind import *
 
@@ -41,7 +44,26 @@ def gen_text_mind():
         return jsonify({"ret":"-1", "data":"", "msg":"error auth!"})
     
     mind_txt, cost = text_to_mind(inp["text"])
-    return jsonify({"ret":"0", "data": mind_txt, f"msg":"gen success! cost: {cost}"})
+
+    # 将Markdown文本转换为HTML
+    html = markdown.markdown(mind_txt)
+
+    # 使用BeautifulSoup解析HTML
+    soup = BeautifulSoup(html, 'html.parser')
+
+    # 将HTML解析为JSON
+    json_data = []
+    for tag in soup.find_all():
+        json_data.append({
+            'tag': tag.name,
+            'text': tag.text,
+            'attrs': tag.attrs,
+        })
+
+    # 将JSON数据转换为字符串
+    json_str = json.dumps(json_data, indent=4)
+
+    return jsonify({"ret":"0", "data": json_str, f"msg":"gen success! cost: {cost}"})
 
 
 if __name__ == '__main__':
