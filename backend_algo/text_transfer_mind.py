@@ -1,4 +1,4 @@
-from .config import *
+from config import *
 
 from langchain.chat_models import ChatOpenAI
 from langchain.text_splitter import TokenTextSplitter
@@ -102,34 +102,40 @@ MINDMAP IN MARKDOWN:
 )
 
 
+class OpenAIException(Exception):
+    def __init__(self, message="调用openai接口异常"):
+        self.message = message
+        super().__init__(self.message)
+
+
 def text_to_mind(text):
-
-    # Set your OpenAI API Key.
-    # openai_api_key = OPENAI_API_KEYS
-
-    # Split Data For Mindmap Generation
-    text_splitter = TokenTextSplitter(model_name=OPENAI_API_MODEL, chunk_size=10000, chunk_overlap=1000)
-    texts_for_mindmap = text_splitter.split_text(text)
-    docs_for_mindmap = [Document(page_content=t) for t in texts_for_mindmap]
-
-    PROMPT_MINDMAP = PromptTemplate(template=prompt_template_mindmap, input_variables=["text"])
-    REFINE_PROMPT_MINDMAP = PromptTemplate(
-        input_variables=["existing_answer", "text"],
-        template=refine_template_mindmap,
-    )
-
-    with get_openai_callback() as cb:
-
-        llm_markdown = ChatOpenAI(openai_api_key=OPENAI_API_KEYS, temperature=0.3, model=OPENAI_API_MODEL)
-
-        summarize_chain = load_summarize_chain(llm=llm_markdown, 
-        chain_type="refine", verbose=False, question_prompt=PROMPT_MINDMAP, refine_prompt=REFINE_PROMPT_MINDMAP) # 
-
-        # Generate mindmap
-        mindmap = summarize_chain(docs_for_mindmap)
+    try:
+        text_splitter = TokenTextSplitter(model_name=OPENAI_API_MODEL, chunk_size=10000, chunk_overlap=1000)
+        texts_for_mindmap = text_splitter.split_text(text)
+        docs_for_mindmap = [Document(page_content=t) for t in texts_for_mindmap]
+    
+        PROMPT_MINDMAP = PromptTemplate(template=prompt_template_mindmap, input_variables=["text"])
+        REFINE_PROMPT_MINDMAP = PromptTemplate(
+            input_variables=["existing_answer", "text"],
+            template=refine_template_mindmap,
+        )
+    
+        with get_openai_callback() as cb:
+    
+            llm_markdown = ChatOpenAI(openai_api_key=OPENAI_API_KEYS, temperature=0.3, model=OPENAI_API_MODEL)
+    
+            summarize_chain = load_summarize_chain(llm=llm_markdown, 
+            chain_type="refine", verbose=False, question_prompt=PROMPT_MINDMAP, refine_prompt=REFINE_PROMPT_MINDMAP) # 
+    
+            # Generate mindmap
+            mindmap = summarize_chain(docs_for_mindmap)
+        
+        return mindmap['output_text'], cb
+    except Exception as e:
+        raise OpenAIException(f"调用openai接口异常: {e}")
 
         # print("=========>>>>>>>>>", mindmap['output_text'])
+    
 
     # Print cost
     # print(">>>>>>>>>token cost: ", cb)
-    return mindmap['output_text'], cb
